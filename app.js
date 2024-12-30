@@ -8,13 +8,14 @@ var mongoconnection = require('./config/mongoconnnection.json')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var joueurRouter = require('./routes/joueur');
+var partieRouter = require('./routes/partie');
 
 var app = express();
 const mongoose = require('mongoose');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set('view engine', 'twig');
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/joueurs',joueurRouter);
+app.use('/parties',partieRouter);
 
 
 //mongodb connection

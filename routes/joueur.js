@@ -15,5 +15,5 @@ router.get('/getById/:id',GetJoueursById);
 router.delete('/delete/:id',SupprimerJoueur);
 
 //Attaquer un joueur
-router.post('/attaque/:idAttaquant/:idVictime',attaque);
+router.put('/attaque/:idAttaquant/:idVictime',attaque);
 module.exports = router;
