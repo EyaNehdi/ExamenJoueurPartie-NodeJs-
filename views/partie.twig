@@ -1,13 +1,81 @@
 <html>
 <head>
+<script src="http://localhost:3001/socket.io/socket.io.js"></script>
 </head>
 <body>
-<ul>
-{% for partie in parties %}
-<li>{{partie.nom}}</li>
-<li>{{partie.joueur_1}}</li>
-<li>{{partie.joueur_2}}</li>
-{% endfor %}
-</ul>
+<div id="notif"></div>
+<form onsubmit="envoyer(event)">
+<label>Nom partie </label>
+<input type="text" id="nom" />
+<label>Id joueur1</label>
+<input type="text" id="joueur1">
+<label>Id joueur2</label>
+<input type="text" id="joueur2">
+<button>Envoyer</button>
+</form>
+<h5>List joueurs</h5>
+ <div id="joueursList"></div>
+<h5>List Parties</h5>
+<div id="partieList"></div>
+
+<script>
+const socket = io.connect('http://localhost:3001');
+
+//------------------------get all joueurs
+socket.emit("getJoueurs");
+socket.on("getJoueurs",(joueurs)=>{
+const listContainer = document.getElementById("joueursList");
+// Clear the existing list
+  listContainer.innerHTML = "";
+  // Iterate through each joueur
+  joueurs.forEach((joueur) => {
+    // Create a sublist for each joueur
+    const ul = document.createElement("ul");
+    // Add each attribute as a separate list item
+    for (const key in joueur) {
+      if (joueur.hasOwnProperty(key)) {
+        const li = document.createElement("li");
+        li.textContent = `${key}: ${joueur[key]}`;
+        ul.appendChild(li);
+      }
+    }
+    // Append the sublist to the main container
+    listContainer.appendChild(ul);
+  });
+
+  //------------------------ajouter partie aux 2 joueurs
+socket.on('partieAjoutee',async(partie)=>{
+const notif = document.getElementById("notif");
+const partieJS = JSON.stringify(partie,null,2);
+notif.innerHTML = partieJS;
+});
+
+});
+//---------get All partie
+socket.emit("getParties");
+socket.on("getParties",async(parties)=>{
+const lp = document.getElementById("partieList");
+ lp.innerHTML = "";
+ parties.forEach((partie)=>{
+    const ul = document.createElement("ul");
+    for (const key in partie) {
+        if(partie.hasOwnProperty(key))
+        {
+            const li = document.createElement("li");
+        li.textContent = `${key}: ${partie[key]}`;
+        ul.appendChild(li);
+        }
+    }
+    lp.appendChild(ul);
+ });
+  });
+ function envoyer(event){
+    event.preventDefault();
+    const nom = document.getElementById("nom").value;
+    const joueur1 = document.getElementById("joueur1").value;
+    const joueur2 = document.getElementById("joueur2").value;
+    socket.emit('EnvoieId',{nom,joueur1,joueur2});
+  }
+</script>
 </body>
 </html>

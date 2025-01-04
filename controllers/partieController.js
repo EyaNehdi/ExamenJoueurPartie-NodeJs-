@@ -25,8 +25,7 @@ try{
 //GET ALL 
 const getParties = async(req,res)=>{
     try{
-const parties = await Partie.find();
-res.render('../views/partie.twig',{parties});
+res.render('partie.twig');
     }catch{
         res.send(500,"Erreur de récupération de parties");
     }
